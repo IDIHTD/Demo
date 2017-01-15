@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -29,7 +31,13 @@ namespace ReadFiles
             foreach (string fileName in Directory.GetFiles(targetDir))
             {
                 XmlElement childElement = myDocument.CreateElement("Fil");
-                childElement.InnerText = fileName.Substring(fileName.LastIndexOf("\\") + 1);
+                    var fileInfo = new FileInfo(fileName);
+                    FileVersionInfo myFileVersion = FileVersionInfo.GetVersionInfo(fileName);
+                    if(myFileVersion!=null&&!string.IsNullOrEmpty(myFileVersion.FileVersion))
+                    childElement.SetAttribute("Version",myFileVersion.FileVersion);
+                    if (fileInfo != null)
+                        childElement.SetAttribute("Size",fileInfo.Length.ToString());
+                childElement.SetAttribute("Name", fileName.Substring(fileName.LastIndexOf("\\") + 1));
                 rootElement.AppendChild(childElement);
             }
             foreach (string directory in Directory.GetDirectories(targetDir))
@@ -53,7 +61,13 @@ namespace ReadFiles
             foreach (string fileName in Directory.GetFiles(targetDir))
             {
                 XmlElement childElement = myDocument.CreateElement("Fil");
-                childElement.InnerText = fileName.Substring(fileName.LastIndexOf("\\") + 1);
+                var fileInfo = new FileInfo(fileName);
+                FileVersionInfo myFileVersion = FileVersionInfo.GetVersionInfo(fileName);
+                if (myFileVersion != null && !string.IsNullOrEmpty(myFileVersion.FileVersion))
+                    childElement.SetAttribute("Version", myFileVersion.FileVersion);
+                if (fileInfo != null)
+                    childElement.SetAttribute("Size", fileInfo.Length.ToString());
+                childElement.SetAttribute("Name", fileName.Substring(fileName.LastIndexOf("\\") + 1));
                 xmlNode.AppendChild(childElement);
             }
             foreach (string directory in Directory.GetDirectories(targetDir))

@@ -12,8 +12,10 @@ namespace ReadFiles
     {
         static void Main(string[] args)
         {
-            //Helper.CreateXml(@"D:\TFSServerCode\新建文件夹\bin");
-            var s= Helper.DeserializeFromXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "XMLFile1.xml"),typeof(bin));
+            //var xmlDoc = Helper.CreateXml(@"D:\TFSServerCode\新建文件夹\bin");
+            //if (xmlDoc != null && !string.IsNullOrEmpty(xmlDoc.InnerXml))
+            //    xmlDoc.Save(AppDomain.CurrentDomain.BaseDirectory + "\\XmlFiles\\" + DateTime.Now.ToString("yyyyMMddMMss") + ".xml");
+            var s = Helper.DeserializeFromXml(AppDomain.CurrentDomain.BaseDirectory + "\\XmlFiles\\201701150155.xml", typeof(bin));
             var temp = s as bin;
             Console.Write(temp);
         }

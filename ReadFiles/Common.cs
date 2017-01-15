@@ -11,7 +11,8 @@ namespace ReadFiles
     public class bin
     {
         [XmlElement(ElementName = "Fil")]
-        public List<string> Fil { get; set; }
+        public List<Fils> Fil { get; set; }
+
         [XmlElement(ElementName = "Dir")]
         public List<Dirs> Dir { get; set; }
     }
@@ -20,11 +21,27 @@ namespace ReadFiles
     {
         [XmlAttribute(AttributeName = "Name")]
         public string Name { get; set; }
+
         [XmlElement(ElementName = "Fil")]
-        public List<string> Fil { get; set; }
+        public List<Fils> Fil { get; set; }
+
+       
         [XmlElement(ElementName = "Dir")]
         public List<Dirs> Dir { get; set; }
     }
 
+
+    public class Fils
+    {
+        [XmlAttribute(AttributeName = "Version")]
+        public string Version { get; set; }
+
+        [XmlAttribute(AttributeName = "Size")]
+        public string Size { get; set; }
+
+        [XmlAttribute(AttributeName = "Name")]
+        public string Name { get; set; }
+
+    }
   
 }
