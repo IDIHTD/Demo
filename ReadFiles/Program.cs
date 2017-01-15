@@ -12,12 +12,20 @@ namespace ReadFiles
     {
         static void Main(string[] args)
         {
-            //var xmlDoc = Helper.CreateXml(@"D:\TFSServerCode\新建文件夹\bin");
+            //读取文件写入XML
+            //var xmlDoc = Helper.CreateXml(@"D:\新建文件夹\新建文件夹\bin");
+            //var fileName = DateTime.Now.ToString("yyyyMMddHHss") + ".xml";
             //if (xmlDoc != null && !string.IsNullOrEmpty(xmlDoc.InnerXml))
-            //    xmlDoc.Save(AppDomain.CurrentDomain.BaseDirectory + "\\XmlFiles\\" + DateTime.Now.ToString("yyyyMMddMMss") + ".xml");
-            var s = Helper.DeserializeFromXml(AppDomain.CurrentDomain.BaseDirectory + "\\XmlFiles\\201701150155.xml", typeof(bin));
+            //    xmlDoc.Save(AppDomain.CurrentDomain.BaseDirectory + "\\XmlFiles\\" + fileName);
+
+            //反序列化XML为实体类
+            var s = Helper.DeserializeFromXml(AppDomain.CurrentDomain.BaseDirectory + "\\XmlFiles\\201701150123.xml", typeof(bin));
             var temp = s as bin;
             Console.Write(temp);
+
+            //对比
+
+
         }
     }
 }

@@ -94,5 +94,13 @@ namespace ReadFiles
             }
             return result;
         }
+
+        public static T XmlDeserialize<T>(string xml, string encodingStyle = "gb2312")
+        {
+            Encoding encoding = Encoding.GetEncoding(encodingStyle);
+            XmlSerializer xmls = new XmlSerializer(typeof(T));
+            MemoryStream memstream = new MemoryStream(encoding.GetBytes(xml));
+            return (T)xmls.Deserialize(memstream);
+        }
     }
 }

@@ -43,5 +43,15 @@ namespace ReadFiles
         public string Name { get; set; }
 
     }
+
+
+    public class DiffentFile
+    {
+        public string DirName { get; set; }
+
+        public string FilName { get; set; }
+
+        public string DiffentValue { get; set; }
+    }
   
 }
