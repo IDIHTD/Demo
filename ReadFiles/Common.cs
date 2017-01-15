@@ -7,18 +7,22 @@ using System.Xml.Serialization;
 
 namespace ReadFiles
 {
-    [Serializable]
+    [XmlRoot("bin")]
     public class bin
     {
+        [XmlElement(ElementName = "Fil")]
         public List<string> Fil { get; set; }
-
+        [XmlElement(ElementName = "Dir")]
         public List<Dirs> Dir { get; set; }
     }
-    [Serializable]
+
     public class Dirs
     {
+        [XmlAttribute(AttributeName = "Name")]
+        public string Name { get; set; }
+        [XmlElement(ElementName = "Fil")]
         public List<string> Fil { get; set; }
-
+        [XmlElement(ElementName = "Dir")]
         public List<Dirs> Dir { get; set; }
     }
 

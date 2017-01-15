@@ -13,7 +13,7 @@ namespace ReadFiles
         static void Main(string[] args)
         {
             //Helper.CreateXml(@"D:\TFSServerCode\新建文件夹\bin");
-            var s= Helper.DeserializeFromXml(@"D:\temp\XMLFile1.xml",typeof(bin));
+            var s= Helper.DeserializeFromXml(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "XMLFile1.xml"),typeof(bin));
             var temp = s as bin;
             Console.Write(temp);
         }
