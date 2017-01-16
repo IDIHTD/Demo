@@ -44,7 +44,7 @@ namespace ReadFiles
 
     }
 
-
+    [Serializable]
     public class DiffentFile
     {
         public string DirName { get; set; }

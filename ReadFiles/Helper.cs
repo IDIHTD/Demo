@@ -14,8 +14,8 @@ namespace ReadFiles
 {
    public class Helper
     {
-       
 
+        #region 读取指定目录下的文件生成XML文件
         /// <summary>
         /// 将指定目录下的子目录和文件生成xml文档
         /// </summary>
@@ -78,9 +78,16 @@ namespace ReadFiles
                 CreateBranch(directory, childElement, myDocument);
             }
         }
+        #endregion
 
-        
 
+        #region 反序列化XML
+        /// <summary>
+        /// 将XML反序列化
+        /// </summary>
+        /// <param name="xmlFilePath"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static object DeserializeFromXml(string xmlFilePath, Type type)
         {
             object result = null;
@@ -95,6 +102,13 @@ namespace ReadFiles
             return result;
         }
 
+        /// <summary>
+        /// 反序列化XML
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="xml"></param>
+        /// <param name="encodingStyle"></param>
+        /// <returns></returns>
         public static T XmlDeserialize<T>(string xml, string encodingStyle = "gb2312")
         {
             Encoding encoding = Encoding.GetEncoding(encodingStyle);
@@ -102,5 +116,125 @@ namespace ReadFiles
             MemoryStream memstream = new MemoryStream(encoding.GetBytes(xml));
             return (T)xmls.Deserialize(memstream);
         }
+        #endregion
+
+
+        #region 文件对比方法
+        public static List<DiffentFile> ComparedFile(bin serverFiles,bin clientFiles)
+        {
+            var diffentFile = new List<DiffentFile>();
+            //如果服务器端或者客户端没有文件则返回空
+            if ((!serverFiles.Dir.Any() && !serverFiles.Fil.Any()) || (!clientFiles.Dir.Any() && !clientFiles.Fil.Any()))
+                return diffentFile;
+            //先判断大版本是否相同
+            if(serverFiles.Fil.Exists(o=>o.Name== "Memex.exe")&& clientFiles.Fil.Exists(o => o.Name == "Memex.exe"))
+            {
+                var serverExe = serverFiles.Fil.FirstOrDefault(o=>o.Name== "Memex.exe");
+                var clientExe= clientFiles.Fil.FirstOrDefault(o => o.Name == "Memex.exe");
+                if (serverExe.Version == clientExe.Version)
+                    return diffentFile;
+
+                #region bin下文件比较
+                if (serverFiles.Fil.Any())
+                {                    
+                    //客户端bin下没有文件
+                    if(!clientFiles.Fil.Any())
+                        serverFiles.Fil.ForEach(o => {
+                            diffentFile.Add(new DiffentFile
+                            {
+                                DiffentValue = "客户端没有的文件",
+                                DirName = "bin",
+                                FilName = o.Name
+                            });
+                        });
+                    else
+                    {
+                        serverFiles.Fil.ForEach(o=> {
+                            var firstOrDefatult = clientFiles.Fil.FirstOrDefault(c=>c.Name==o.Name);
+                            if (firstOrDefatult == null)
+                                diffentFile.Add(new DiffentFile {
+                                     DiffentValue="客户端没有的文件",
+                                      DirName="bin",
+                                      FilName=o.Name
+                                });
+                            else
+                            {
+                                if(o.Size!=firstOrDefatult.Size||o.Version!=firstOrDefatult.Version)
+                                    diffentFile.Add(new DiffentFile {
+                                        DiffentValue=o.Size!=firstOrDefatult.Size?"文件大小不一样":"文件版本不一样",
+                                        DirName="bin",
+                                        FilName=o.Name
+                                    });
+                            }
+                        });
+                    }
+                }
+                #endregion
+
+                if(serverFiles.Dir.Any())
+                    serverFiles.Dir.ForEach(o=> {
+                        var firstOrDefault = clientFiles.Dir.FirstOrDefault(c => c.Name == o.Name);
+                        ComparedFileCore(o,firstOrDefault,diffentFile);
+                    });                
+            }
+            return diffentFile;
+        }
+
+
+        public static void ComparedFileCore(Dirs serverFiles, Dirs clientFiles, List<DiffentFile> diffentFile)
+        {
+            //客户端没有文件夹
+            if (clientFiles == null)
+                diffentFile.Add(new DiffentFile
+                {
+                    DiffentValue = "客户端没有的文件夹",
+                    DirName = serverFiles.Name,
+                    FilName = serverFiles.Name
+                });
+            else
+            {
+                #region 文件夹下的文件对比
+                //客户端文件夹没有文件
+                if (serverFiles.Fil.Any() && !clientFiles.Fil.Any())
+                    serverFiles.Fil.ForEach(o =>
+                    {
+                        diffentFile.Add(new DiffentFile
+                        {
+                            DiffentValue = "客户端没有的文件",
+                            DirName = serverFiles.Name,
+                            FilName = o.Name
+                        });
+                    });
+                else if (serverFiles.Fil.Any() && clientFiles.Fil.Any())
+                    serverFiles.Fil.ForEach(o=> {
+                        var clientFile = clientFiles.Fil.FirstOrDefault(c=>c.Name==o.Name);
+                        //客户端不存在的文件
+                        if (clientFiles == null)
+                            diffentFile.Add(new DiffentFile
+                            {
+                                DiffentValue = "客户端文件不存在",
+                                DirName = serverFiles.Name,
+                                FilName = o.Name
+                            });
+                        else if (o.Size != clientFile.Size|| o.Version != clientFile.Version)
+                            diffentFile.Add(new DiffentFile
+                            {
+                                DiffentValue = o.Size != clientFile.Size?"文件大小不一致": "文件版本不一致",
+                                DirName = serverFiles.Name,
+                                FilName = o.Name
+                            });
+                    });
+                #endregion
+
+                #region 文件夹下还有文件夹
+                if (serverFiles.Dir.Any())
+                    serverFiles.Dir.ForEach(o=> {
+                        var firstOrDefault = clientFiles.Dir.FirstOrDefault(c => c.Name == o.Name);
+                        ComparedFileCore(o, firstOrDefault, diffentFile);
+                    });
+                #endregion
+            }
+        }
+        #endregion
     }
 }

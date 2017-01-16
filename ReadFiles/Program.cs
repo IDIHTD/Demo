@@ -19,13 +19,16 @@ namespace ReadFiles
             //    xmlDoc.Save(AppDomain.CurrentDomain.BaseDirectory + "\\XmlFiles\\" + fileName);
 
             //反序列化XML为实体类
-            var s = Helper.DeserializeFromXml(AppDomain.CurrentDomain.BaseDirectory + "\\XmlFiles\\201701150123.xml", typeof(bin));
+            var s = Helper.DeserializeFromXml(AppDomain.CurrentDomain.BaseDirectory + "\\XmlFiles\\server.xml", typeof(bin));
             var temp = s as bin;
-            Console.Write(temp);
 
-            //对比
+            var c = Helper.DeserializeFromXml(AppDomain.CurrentDomain.BaseDirectory+ "\\XmlFiles\\client.xml",typeof(bin));
 
+            var tempc = c as bin;
 
+            //对比方法
+
+            Helper.ComparedFile(temp,tempc);
         }
     }
 }
