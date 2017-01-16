@@ -159,11 +159,18 @@ namespace ReadFiles
                                 });
                             else
                             {
-                                if(o.Size!=firstOrDefatult.Size||o.Version!=firstOrDefatult.Version)
+                                if (o.Version != null && firstOrDefatult.Version != null && o.Version != firstOrDefatult.Version)
+                                    diffentFile.Add(new DiffentFile
+                                    {
+                                        DiffentValue = "文件版本不一样",
+                                        DirName = "bin",
+                                        FilName = o.Name
+                                    });
+                               else if (o.Size != firstOrDefatult.Size)
                                     diffentFile.Add(new DiffentFile {
-                                        DiffentValue=o.Size!=firstOrDefatult.Size?"文件大小不一样":"文件版本不一样",
-                                        DirName="bin",
-                                        FilName=o.Name
+                                        DiffentValue = "文件大小不一样",
+                                        DirName = "bin",
+                                        FilName = o.Name
                                     });
                             }
                         });
@@ -216,13 +223,20 @@ namespace ReadFiles
                                 DirName = serverFiles.Name,
                                 FilName = o.Name
                             });
-                        else if (o.Size != clientFile.Size|| o.Version != clientFile.Version)
+                        else if (o.Version != null && clientFile.Version != null && o.Version != clientFile.Version)
                             diffentFile.Add(new DiffentFile
                             {
-                                DiffentValue = o.Size != clientFile.Size?"文件大小不一致": "文件版本不一致",
+                                DiffentValue = "文件版本不一致",
                                 DirName = serverFiles.Name,
                                 FilName = o.Name
                             });
+                        else if (o.Size != clientFile.Size)
+                            diffentFile.Add(new DiffentFile
+                            {
+                                DiffentValue = "文件大小不一致",
+                                DirName = serverFiles.Name,
+                                FilName = o.Name
+                            });                     
                     });
                 #endregion
 
