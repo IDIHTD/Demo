@@ -24,7 +24,7 @@ namespace SQLiteDemo
         }
         static SQLiteHelper()
         {
-            System.Data.SQLite.SQLiteConnectionStringBuilder scBuilder = new SQLiteConnectionStringBuilder();
+            SQLiteConnectionStringBuilder scBuilder = new SQLiteConnectionStringBuilder();
             scBuilder.DataSource = dbPath; //SQLite数据库地址
             //scBuilder.Password = "123456";//密码
             strConnectionString = scBuilder.ToString();
@@ -59,7 +59,7 @@ namespace SQLiteDemo
         /// <param name="commandText">Command text.</param>
         /// <param name="commandParameters">Command parameters.</param>
         /// <returns>SQLite Command</returns>
-        public static SQLiteCommand CreateCommand(SQLiteConnection connection, string commandText, params SQLiteParameter[] commandParameters)
+        public static SQLiteCommand CreateCommand(string commandText, params SQLiteParameter[] commandParameters)
         {
             SQLiteCommand cmd = new SQLiteCommand(commandText, connection);
             if (commandParameters.Length > 0)
@@ -70,26 +70,6 @@ namespace SQLiteDemo
             return cmd;
         }
 
-        /// <summary>
-        /// Creates the command.
-        /// </summary>
-        /// <param name="connectionString">Connection string.</param>
-        /// <param name="commandText">Command text.</param>
-        /// <param name="commandParameters">Command parameters.</param>
-        /// <returns>SQLite Command</returns>
-        public static SQLiteCommand CreateCommand(string connectionString, string commandText, params SQLiteParameter[] commandParameters)
-        {
-            SQLiteConnection cn = new SQLiteConnection(connectionString);
-
-            SQLiteCommand cmd = new SQLiteCommand(commandText, cn);
-
-            if (commandParameters.Length > 0)
-            {
-                foreach (SQLiteParameter parm in commandParameters)
-                    cmd.Parameters.Add(parm);
-            }
-            return cmd;
-        }
         /// <summary>
         /// Creates the parameter.
         /// </summary>
@@ -374,9 +354,9 @@ namespace SQLiteDemo
         /// <param name="commandText">SQL statment with embedded "@param" style parameters</param>
         /// <param name="paramList">object[] array of param values</param>
         /// <returns></returns>
-        public static object ExecuteScalar(string connectionString, string commandText, params object[] paramList)
+        public static object ExecuteScalar(string commandText, params object[] paramList)
         {
-            SQLiteConnection cn = new SQLiteConnection(connectionString);
+            SQLiteConnection cn = new SQLiteConnection(strConnectionString);
             SQLiteCommand cmd = cn.CreateCommand();
             cmd.CommandText = commandText;
             AttachParameters(cmd, commandText, paramList);
