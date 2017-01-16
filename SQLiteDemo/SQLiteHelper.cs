@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
@@ -114,6 +115,43 @@ namespace SQLiteDemo
             cn.Close();
             return ds;
         }
+        public static T ExecuteSingleData<T>(string commandText,object[] paramList)
+        {
+            SQLiteConnection cn = new SQLiteConnection(connection);
+            cn.Open();
+            try
+            {
+              return cn.QuerySingle<T>(commandText,paramList);
+            }
+            catch(Exception ex)
+            {
+                return default(T);
+            }
+            finally
+            {
+                cn.Close();
+            }
+        }
+
+        public static List<T>ExecuteeListData<T>(string commandText, object[] paramList)
+        {
+            SQLiteConnection cn = new SQLiteConnection(connection);
+            cn.Open();
+            try
+            {
+                return cn.Query<T>(commandText, paramList).ToList();
+            }
+            catch (Exception ex)
+            {
+                return new List<T>();
+            }
+            finally
+            {
+                cn.Close();
+            }
+        }
+
+
         /// <summary>
         /// Shortcut method to execute dataset from SQL Statement and object[] arrray of  parameter values
         /// </summary>
